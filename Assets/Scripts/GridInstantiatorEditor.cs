@@ -5,21 +5,18 @@ using UnityEditor;
 public class GridInstantiatorEditor : Editor
 {
     private BlockType[,] map;
-    private SerializedProperty destructibleBlockPrefabProp;
-    private SerializedProperty indestructibleBlockPrefabProp;
-    private SerializedProperty traversableBlockPrefabProp;
+    private SerializedProperty blockPrefabsProp;
     private SerializedProperty spacingProp;
 
     private void OnEnable()
     {
-        destructibleBlockPrefabProp = serializedObject.FindProperty("destructibleBlockPrefab");
-        indestructibleBlockPrefabProp = serializedObject.FindProperty("indestructibleBlockPrefab");
-        traversableBlockPrefabProp = serializedObject.FindProperty("traversableBlockPrefab");
+        blockPrefabsProp = serializedObject.FindProperty("blockPrefabs");
         spacingProp = serializedObject.FindProperty("spacing");
     }
 
     public override void OnInspectorGUI()
     {
+        base.OnInspectorGUI();
         serializedObject.Update();
 
         int width = 13;
@@ -49,20 +46,17 @@ public class GridInstantiatorEditor : Editor
         if (GUILayout.Button("Apply Map"))
         {
             myScript.SetMap(map);
-
         }
-
 
         if (GUILayout.Button("Apply Default Map"))
         {
-            map = CreateMiddleTraversableMap();
- myScript.SetMap(map);
-         }
+            map = myScript.CreateDefaultMap();
+            myScript.SetMap(map);
+        }
+
         EditorGUILayout.Space();
 
-        EditorGUILayout.PropertyField(destructibleBlockPrefabProp);
-        EditorGUILayout.PropertyField(indestructibleBlockPrefabProp);
-        EditorGUILayout.PropertyField(traversableBlockPrefabProp);
+        EditorGUILayout.PropertyField(blockPrefabsProp, true);
         EditorGUILayout.PropertyField(spacingProp);
 
         serializedObject.ApplyModifiedProperties();
@@ -74,9 +68,7 @@ public class GridInstantiatorEditor : Editor
         gridInstantiator.map = map;
     }
 
-
-
-    private BlockType[,] CreateMiddleTraversableMap()
+private BlockType[,] CreateMiddleTraversableMap()
 {
     int width = 13;
     int height = 11;
@@ -125,5 +117,6 @@ public class GridInstantiatorEditor : Editor
 
     return map;
 }
+
 
 }
